@@ -1,4 +1,4 @@
-#!bin/bash/
+#!/bin/bash
 
 if ! command -v rustc &> /dev/null
 then
