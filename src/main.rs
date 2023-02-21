@@ -2,11 +2,15 @@ use std::env;
 use std::io::{stdin, stdout, Write};
 use std::process::Command;
 
-use crate::stash_changes::stash_changes;
+use crate::has_unstaged_changes::has_unstaged_changes;
 use crate::init_git_repo::init_git_repo;
+use crate::is_git_repo::is_git_repo;
+use crate::stash_changes::stash_changes;
 
-mod stash_changes;
+mod has_unstaged_changes;
 mod init_git_repo;
+mod is_git_repo;
+mod stash_changes;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -106,26 +110,4 @@ fn main() {
             println!("Usage: rust-git [init | add | commit | push]");
         }
     }
-}
-
-fn is_git_repo() -> bool {
-    let output = Command::new("git")
-        .arg("rev-parse")
-        .arg("--is-inside-work-tree")
-        .output()
-        .expect("Failed to run git command");
-
-    let output_str = String::from_utf8_lossy(&output.stdout);
-    output_str.trim() == "true"
-}
-
-fn has_unstaged_changes() -> bool {
-    let output = Command::new("git")
-        .arg("status")
-        .arg("--porcelain")
-        .output()
-        .expect("Failed to run git status");
-
-    let status = String::from_utf8_lossy(&output.stdout);
-    !status.trim().is_empty()
 }
